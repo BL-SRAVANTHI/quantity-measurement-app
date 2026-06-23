@@ -1,57 +1,48 @@
 /**
- * QuantityMeasurementApp - UC3: Generic Quantity Class for DRY Principle
- * UC3 is designed to overcome the Disadvantage of using Feet and Inches
- * which starts violating the DRY principle, where both Feet and Inches
- * classes contain nearly identical code, having the same constructor
- * pattern, Identical equals() method implementation.
- * This Use Case refactors the existing Feet and Inches classes into a
- * single generic Quantity Length class that eliminates code duplication
- * while maintaining all functionality from UC1 and UC2.
- * The Quantity Length class represents any measurement with a value and
- * unit type, applying the DRY (Don't Repeat Yourself) principle.
- * This reduces maintenance burden and makes the codebase more scalable
- * for adding new units in the future.
+ * QuantityMeasurementApp - UC4: Extended Unit Support
+ * UC4 extends UC3 by introducing Yards and Centimeters
+ * as additional length units to the QuantityLength class.
+ * This use case demonstrates how the generic Quantity class
+ * design scales effortlessly to accommodate new units without code
+ * duplication. Yards will be added to the LengthUnit enum with
+ * the appropriate conversion factor
+ * (1 yard = 3 feet) and (1cm = 0.393701in),
+ * and all equality comparisons will work seamlessly across
+ * feet, inches, yards, and cms.
  */
 
 package com.bridgelabz;
 
 public class QuantityMeasurementApp {
 
-    public static void demonstrateLengthEquality(Length length1, Length length2) {
+    public static boolean demonstrateLengthEquality(Length length1, Length length2) {
         if (length1.compare(length2)) {
-            System.out.println("Equal (True)");
+            System.out.println("Equal(True)");
+            return true;
         } else {
-            System.out.println("Not Equal (False)");
+            System.out.println("Not Equal(False)");
+            return false;
         }
     }
 
-    public static void demonstrateFeetEquality() {
-        System.out.println("Feet Equality:");
-        Length length1 = new Length(1.0, Length.LengthUnit.FEET);
-        Length length2 = new Length(1.0, Length.LengthUnit.FEET);
+    public static boolean demonstrateLengthComparison(double value1, Length.LengthUnit unit1, double value2, Length.LengthUnit unit2) {
+        Length length1 = new Length(value1, unit1);
+        Length length2 = new Length(value2, unit2);
 
-        demonstrateLengthEquality(length1, length2);
-    }
-
-    public static void demonstrateInchesEquality() {
-        System.out.println("Inches Equality:");
-        Length length1 = new Length(12.0, Length.LengthUnit.INCHES);
-        Length length2 = new Length(12.0, Length.LengthUnit.INCHES);
-
-        demonstrateLengthEquality(length1, length2);
-    }
-
-    public static void demonstrateFeetInchesComparison() {
-        System.out.println("Feet and Inches Comparison:");
-        Length length1 = new Length(1.0, Length.LengthUnit.FEET);
-        Length length2 = new Length(12.0, Length.LengthUnit.INCHES);
-
-        demonstrateLengthEquality(length1, length2);
+        return demonstrateLengthEquality(length1, length2);
     }
 
     public static void main(String[] args) {
-        demonstrateFeetEquality();
-        demonstrateInchesEquality();
-        demonstrateFeetInchesComparison();
+        demonstrateLengthComparison(1.0, Length.LengthUnit.FEET,
+                12.0, Length.LengthUnit.INCHES);
+        demonstrateLengthComparison(1.0, Length.LengthUnit.YARDS,
+                36.0, Length.LengthUnit.INCHES);
+        demonstrateLengthComparison(100, Length.LengthUnit.CENTIMETERS,
+                39.3701, Length.LengthUnit.INCHES);
+        demonstrateLengthComparison(3.0, Length.LengthUnit.FEET,
+                1.0, Length.LengthUnit.YARDS);
+        demonstrateLengthComparison(30.48, Length.LengthUnit.CENTIMETERS,
+                1.0, Length.LengthUnit.FEET);
+
     }
 }
