@@ -1,110 +1,57 @@
 /**
- * QuantityMeasurementApp - UC2: Feet and Inches measurement equality
- * This Use Case extends UC1 to accommodate the Equality
- * Check for Inches along with Feet. This use case is in no way
- * trying to compare two entities, Feet and Inches.
- * They are still treated separately.
- * Please ensure like UC1 the test cases ensure complete test coverage
- * to accurately compare and handle various edge cases
+ * QuantityMeasurementApp - UC3: Generic Quantity Class for DRY Principle
+ * UC3 is designed to overcome the Disadvantage of using Feet and Inches
+ * which starts violating the DRY principle, where both Feet and Inches
+ * classes contain nearly identical code, having the same constructor
+ * pattern, Identical equals() method implementation.
+ * This Use Case refactors the existing Feet and Inches classes into a
+ * single generic Quantity Length class that eliminates code duplication
+ * while maintaining all functionality from UC1 and UC2.
+ * The Quantity Length class represents any measurement with a value and
+ * unit type, applying the DRY (Don't Repeat Yourself) principle.
+ * This reduces maintenance burden and makes the codebase more scalable
+ * for adding new units in the future.
  */
 
 package com.bridgelabz;
 
 public class QuantityMeasurementApp {
-    public static class Feet {
-        private final double value;
 
-        public Feet(double value) {
-            this.value = value;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-
-            if (obj == null) {
-                return false;
-            }
-
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-
-            Feet feet = (Feet) obj;
-            return Double.compare(feet.value, value) == 0;
-        }
-    }
-
-    public static class Inches {
-        private final double value;
-
-        public Inches(double value) {
-            this.value = value;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-
-            if (obj == null) {
-                return false;
-            }
-
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-
-            Inches inches = (Inches) obj;
-            return Double.compare(inches.value, value) == 0;
+    public static void demonstrateLengthEquality(Length length1, Length length2) {
+        if (length1.compare(length2)) {
+            System.out.println("Equal (True)");
+        } else {
+            System.out.println("Not Equal (False)");
         }
     }
 
     public static void demonstrateFeetEquality() {
-        Feet feet1 = new Feet(1);
-        Feet feet2 = new Feet(1);
-        Feet feet3 = new Feet(3);
+        System.out.println("Feet Equality:");
+        Length length1 = new Length(1.0, Length.LengthUnit.FEET);
+        Length length2 = new Length(1.0, Length.LengthUnit.FEET);
 
-        System.out.println("Comparison of Two Feet Objects with same Value(1 ft) : ");
-        if (feet1.equals(feet2)) {
-            System.out.println("Equal(True)");
-        } else {
-            System.out.println("Not Equal(False)");
-        }
-
-        System.out.println("Comparison of Two Feet Objects with different values(1 ft, 3 ft) : ");
-        if (feet1.equals(feet3)) {
-            System.out.println("Equal(True)");
-        } else {
-            System.out.println("Not Equal(False)");
-        }
+        demonstrateLengthEquality(length1, length2);
     }
 
     public static void demonstrateInchesEquality() {
-        Inches inch1 = new Inches(1);
-        Inches inch2 = new Inches(1);
-        Inches inch3 = new Inches(3);
+        System.out.println("Inches Equality:");
+        Length length1 = new Length(12.0, Length.LengthUnit.INCHES);
+        Length length2 = new Length(12.0, Length.LengthUnit.INCHES);
 
-        System.out.println("Comparison of Two Inch Objects with same Value(1 inch) : ");
-        if (inch1.equals(inch2)) {
-            System.out.println("Equal(True)");
-        } else {
-            System.out.println("Not Equal(False)");
-        }
+        demonstrateLengthEquality(length1, length2);
+    }
 
-        System.out.println("Comparison of Two Inch Objects with different values(1 Inch, 3 Inch) : ");
-        if (inch1.equals(inch3)) {
-            System.out.println("Equal(True)");
-        } else {
-            System.out.println("Not Equal(False)");
-        }
+    public static void demonstrateFeetInchesComparison() {
+        System.out.println("Feet and Inches Comparison:");
+        Length length1 = new Length(1.0, Length.LengthUnit.FEET);
+        Length length2 = new Length(12.0, Length.LengthUnit.INCHES);
+
+        demonstrateLengthEquality(length1, length2);
     }
 
     public static void main(String[] args) {
         demonstrateFeetEquality();
         demonstrateInchesEquality();
+        demonstrateFeetInchesComparison();
     }
 }
