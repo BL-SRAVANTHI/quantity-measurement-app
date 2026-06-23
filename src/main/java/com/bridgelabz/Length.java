@@ -6,7 +6,9 @@ public class Length {
 
     public enum LengthUnit {
         FEET(12.0),
-        INCHES(1.0);
+        INCHES(1.0),
+        YARDS(36.0),
+        CENTIMETERS(0.393701);
 
         private final double conversionFactor;
 
@@ -29,7 +31,11 @@ public class Length {
     }
 
     public boolean compare(Length thatLength) {
-        return (Double.compare(this.convertToBaseUnit(), thatLength.convertToBaseUnit()) == 0);
+        double difference = Math.abs(
+                this.convertToBaseUnit()
+                        - thatLength.convertToBaseUnit());
+
+        return (difference < 0.0001);
     }
 
     @Override
@@ -47,5 +53,13 @@ public class Length {
         Length length1 = new Length(1.0, LengthUnit.FEET);
         Length length2 = new Length(12.0, LengthUnit.INCHES);
         System.out.println("Are lengths equal? " + length1.equals(length2));
+
+        Length length3 = new Length(1.0, LengthUnit.YARDS);
+        Length length4 = new Length(36.0, LengthUnit.INCHES);
+        System.out.println("Are lengths equal? " + length3.equals(length4));
+
+        Length length5 = new Length(100.0, LengthUnit.CENTIMETERS);
+        Length length6 = new Length(39.3701, LengthUnit.INCHES);
+        System.out.println("Are lengths equal? " + length5.equals(length6));
     }
 }
