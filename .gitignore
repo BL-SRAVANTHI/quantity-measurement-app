@@ -1,0 +1,30 @@
+### IntelliJ IDEA ###
+.idea/
+*.iml
+out/
+
+### Maven ###
+target/
+
+### Compiled Class Files ###
+*.class
+
+### Packaged Files ###
+*.jar
+*.war
+*.ear
+
+### Logs ###
+*.log
+
+### VS Code ###
+.vscode/
+
+### Other Files ###
+.DS_Store
+Thumbs.db
+
+### Build Folders ###
+build/
+dist/
+bin/
