@@ -77,6 +77,26 @@ public class Length {
         return String.format("%.2f %s", value, unit);
     }
 
+    public Length add(Length thatLength) {
+        if (thatLength == null) {
+            throw new IllegalArgumentException("Length cannot be null");
+        }
+
+        double length1 = this.convertToBaseUnit();
+        double length2 = thatLength.convertToBaseUnit();
+
+        double sumInInches = length1 + length2;
+        double sumInTargetUnits = convertFromBaseToTargetUnit(sumInInches, this.unit);
+        double output = Math.round(sumInTargetUnits * 1000.0) / 1000.0;
+        return new Length(output, this.unit);
+    }
+
+    public double convertFromBaseToTargetUnit(double lengthInInches,
+                                              LengthUnit targetUnit) {
+        return lengthInInches / targetUnit.getConversionFactor();
+    }
+
+
     public static void main(String[] args) {
         Length length1 = new Length(1, LengthUnit.FEET);
 
@@ -88,5 +108,7 @@ public class Length {
 
         Length toInches = length1.convertTo(LengthUnit.INCHES);
         System.out.println(toInches);
+
+        System.out.println((length1.add(toCM).toString()));
     }
 }

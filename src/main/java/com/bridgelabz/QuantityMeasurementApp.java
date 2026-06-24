@@ -1,10 +1,10 @@
 /**
- * QuantityMeasurementApp -UC5: Unit-to-Unit Conversion (Same Measurement Type)
- * UC5 extends UC4 by providing explicit conversion operations between length units
- * (e.g., feet → inches, yards → inches, centimeters → feet).
- * Instead of only comparing equality, the Quantity Length API exposes a conversion method
- * that returns a numeric value converted from a
- * source unit to a target unit using the centralized conversion factors.
+ * QuantityMeasurementApp -UC6: Addition of Two Length Units (Same Category)
+ * UC6 extends UC5 by introducing addition operations between length measurements.
+ * This use case enables the Quantity Length API to add two lengths of potentially different units
+ * (but same category—length) and return the result in the unit of the first operand.
+ * Essentially adding another length to the current length. For example,
+ * adding 1 foot and 12 inches should yield 2 feet (based on the unit of the first operand
  */
 
 package com.bridgelabz;
@@ -37,6 +37,10 @@ public class QuantityMeasurementApp {
         return length.convertTo(toUnit);
     }
 
+    public static Length demonstrateLengthAddition(Length length1, Length length2) {
+        return length1.add(length2);
+    }
+
     public static void main(String[] args) {
         Length lengthInFeet = new Length(1.0, Length.LengthUnit.FEET);
         Length lengthInYards = new Length(3.0, Length.LengthUnit.YARDS);
@@ -49,5 +53,14 @@ public class QuantityMeasurementApp {
         System.out.println(demonstrateLengthConversion(lengthInInches, Length.LengthUnit.YARDS));
         System.out.println(demonstrateLengthConversion(lengthInCM, Length.LengthUnit.INCHES));
         System.out.println(demonstrateLengthConversion(zeroFeet, Length.LengthUnit.INCHES));
+
+        System.out.println(demonstrateLengthAddition(lengthInFeet, lengthInFeet));
+        System.out.println(demonstrateLengthAddition(lengthInFeet, lengthInInches));
+        System.out.println(demonstrateLengthAddition(lengthInInches, lengthInFeet));
+        System.out.println(demonstrateLengthAddition(lengthInFeet, lengthInInches));
+        System.out.println(demonstrateLengthAddition(lengthInYards, lengthInFeet));
+        System.out.println(demonstrateLengthAddition(lengthInInches, lengthInYards));
+        System.out.println(demonstrateLengthAddition(lengthInCM, lengthInYards));
+        System.out.println(demonstrateLengthAddition(lengthInInches, lengthInCM));
     }
 }
