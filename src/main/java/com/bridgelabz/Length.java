@@ -78,17 +78,26 @@ public class Length {
     }
 
     public Length add(Length thatLength) {
-        if (thatLength == null) {
+        return addAndConvert(thatLength, this.unit);
+    }
+
+    public Length add(Length length, LengthUnit targetUnit) {
+        return addAndConvert(length, targetUnit);
+    }
+
+    public Length addAndConvert(Length length, LengthUnit targetUnit) {
+        if (length == null) {
             throw new IllegalArgumentException("Length cannot be null");
         }
+        if (targetUnit == null) {
+            throw new IllegalArgumentException("Target unit cannot be null");
+        }
 
-        double length1 = this.convertToBaseUnit();
-        double length2 = thatLength.convertToBaseUnit();
+        double value1InInches = this.convertToBaseUnit();
+        double value2InInches = length.convertToBaseUnit();
 
-        double sumInInches = length1 + length2;
-        double sumInTargetUnits = convertFromBaseToTargetUnit(sumInInches, this.unit);
-        double output = Math.round(sumInTargetUnits * 1000.0) / 1000.0;
-        return new Length(output, this.unit);
+        double sum = convertFromBaseToTargetUnit(value1InInches + value2InInches, targetUnit);
+        return new Length(Math.round(sum * 1000.0) / 1000.0, targetUnit);
     }
 
     public double convertFromBaseToTargetUnit(double lengthInInches,
