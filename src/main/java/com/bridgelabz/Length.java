@@ -12,18 +12,27 @@ public class Length {
 
         private final double conversionFactor;
 
-        LengthUnit(double conversionFactor) {
-            this.conversionFactor = conversionFactor;
+        public double getConversionFactor() {
+            return this.conversionFactor;
         }
 
-        public double getConversionFactor() {
-            return conversionFactor;
+        LengthUnit(double conversionFactor) {
+            this.conversionFactor = conversionFactor;
         }
     }
 
     public Length(double value, LengthUnit unit) {
+        if (Double.isNaN(value) || Double.isInfinite(value)) {
+            throw new IllegalArgumentException(
+                    "Length value must be a finite number");
+        }
+
         this.value = value;
         this.unit = unit;
+    }
+
+    public double getValue() {
+        return value;
     }
 
     private double convertToBaseUnit() {
@@ -49,17 +58,35 @@ public class Length {
         return compare(lengthObj);
     }
 
+    public Length convertTo(LengthUnit targetUnit) {
+        if (targetUnit == null) {
+            throw new IllegalArgumentException("Target unit cannot be null");
+        }
+
+        double valueInBaseUnit = this.convertToBaseUnit();
+        double convertedValue =
+                valueInBaseUnit / targetUnit.getConversionFactor();
+
+        convertedValue = Math.round(convertedValue * 100.0) / 100.0;
+
+        return new Length(convertedValue, targetUnit);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%.2f %s", value, unit);
+    }
+
     public static void main(String[] args) {
-        Length length1 = new Length(1.0, LengthUnit.FEET);
-        Length length2 = new Length(12.0, LengthUnit.INCHES);
-        System.out.println("Are lengths equal? " + length1.equals(length2));
+        Length length1 = new Length(1, LengthUnit.FEET);
 
-        Length length3 = new Length(1.0, LengthUnit.YARDS);
-        Length length4 = new Length(36.0, LengthUnit.INCHES);
-        System.out.println("Are lengths equal? " + length3.equals(length4));
+        Length toYards = length1.convertTo(LengthUnit.YARDS);
+        System.out.println(toYards.toString());
 
-        Length length5 = new Length(100.0, LengthUnit.CENTIMETERS);
-        Length length6 = new Length(39.3701, LengthUnit.INCHES);
-        System.out.println("Are lengths equal? " + length5.equals(length6));
+        Length toCM = length1.convertTo(LengthUnit.CENTIMETERS);
+        System.out.println(toCM.toString());
+
+        Length toInches = length1.convertTo(LengthUnit.INCHES);
+        System.out.println(toInches);
     }
 }

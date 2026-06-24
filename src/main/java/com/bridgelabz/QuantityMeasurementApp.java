@@ -1,14 +1,10 @@
 /**
- * QuantityMeasurementApp - UC4: Extended Unit Support
- * UC4 extends UC3 by introducing Yards and Centimeters
- * as additional length units to the QuantityLength class.
- * This use case demonstrates how the generic Quantity class
- * design scales effortlessly to accommodate new units without code
- * duplication. Yards will be added to the LengthUnit enum with
- * the appropriate conversion factor
- * (1 yard = 3 feet) and (1cm = 0.393701in),
- * and all equality comparisons will work seamlessly across
- * feet, inches, yards, and cms.
+ * QuantityMeasurementApp -UC5: Unit-to-Unit Conversion (Same Measurement Type)
+ * UC5 extends UC4 by providing explicit conversion operations between length units
+ * (e.g., feet → inches, yards → inches, centimeters → feet).
+ * Instead of only comparing equality, the Quantity Length API exposes a conversion method
+ * that returns a numeric value converted from a
+ * source unit to a target unit using the centralized conversion factors.
  */
 
 package com.bridgelabz;
@@ -32,17 +28,26 @@ public class QuantityMeasurementApp {
         return demonstrateLengthEquality(length1, length2);
     }
 
-    public static void main(String[] args) {
-        demonstrateLengthComparison(1.0, Length.LengthUnit.FEET,
-                12.0, Length.LengthUnit.INCHES);
-        demonstrateLengthComparison(1.0, Length.LengthUnit.YARDS,
-                36.0, Length.LengthUnit.INCHES);
-        demonstrateLengthComparison(100, Length.LengthUnit.CENTIMETERS,
-                39.3701, Length.LengthUnit.INCHES);
-        demonstrateLengthComparison(3.0, Length.LengthUnit.FEET,
-                1.0, Length.LengthUnit.YARDS);
-        demonstrateLengthComparison(30.48, Length.LengthUnit.CENTIMETERS,
-                1.0, Length.LengthUnit.FEET);
+    public static Length demonstrateLengthConversion(double value, Length.LengthUnit fromUnit, Length.LengthUnit toUnit) {
+        Length length = new Length(value, fromUnit);
+        return length.convertTo(toUnit);
+    }
 
+    public static Length demonstrateLengthConversion(Length length, Length.LengthUnit toUnit) {
+        return length.convertTo(toUnit);
+    }
+
+    public static void main(String[] args) {
+        Length lengthInFeet = new Length(1.0, Length.LengthUnit.FEET);
+        Length lengthInYards = new Length(3.0, Length.LengthUnit.YARDS);
+        Length lengthInInches = new Length(36.0, Length.LengthUnit.INCHES);
+        Length lengthInCM = new Length(1.0, Length.LengthUnit.CENTIMETERS);
+        Length zeroFeet = new Length(0.0, Length.LengthUnit.FEET);
+
+        System.out.println(demonstrateLengthConversion(lengthInFeet, Length.LengthUnit.INCHES));
+        System.out.println(demonstrateLengthConversion(lengthInYards, Length.LengthUnit.FEET));
+        System.out.println(demonstrateLengthConversion(lengthInInches, Length.LengthUnit.YARDS));
+        System.out.println(demonstrateLengthConversion(lengthInCM, Length.LengthUnit.INCHES));
+        System.out.println(demonstrateLengthConversion(zeroFeet, Length.LengthUnit.INCHES));
     }
 }
