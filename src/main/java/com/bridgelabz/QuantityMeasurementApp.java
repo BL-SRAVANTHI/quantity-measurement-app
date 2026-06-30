@@ -1,12 +1,16 @@
 /**
- * QuantityMeasurementApp -UC7: Addition with Target Unit Specification
- * UC7 extends UC6 by providing flexibility in specifying the unit for
- * the addition result. Instead of defaulting to the unit of the first operand,
- * this use case allows the caller to explicitly specify any supported unit as the
- * target unit for the result. This provides greater flexibility in use cases
- * where the result must be expressed in a specific unit regardless of the operands' units.
- * For example, adding 1 foot and 12 inches with a target unit of
- * yards should yield approximately 0.667 yards.
+ * QuantityMeasurementApp -UC8: Refactoring Unit Enum to Standalone with Conversion Responsibility
+ * UC8 refactors the design from UC1–UC7 to overcome the disadvantage of embedding the LengthUnit enum within the QuantityLength class.
+ * This design flaw creates circular dependencies when scaling to
+ * multiple measurement categories (length, weight, volume, etc.) and violates the Single Responsibility Principle by
+ * not centralizing unit-related conversion logic.
+ * <p>
+ * <p>
+ * UC8 extracts the LengthUnit enum into a standalone,
+ * top-level class and assigns it the responsibility of managing
+ * conversions to and from the base unit. The QuantityLength class is
+ * simplified to delegate conversion logic to the unit itself, improving
+ * cohesion, reducing coupling, and establishing a scalable pattern for additional measurement categories.
  */
 
 package com.bridgelabz;
@@ -23,19 +27,19 @@ public class QuantityMeasurementApp {
         }
     }
 
-    public static boolean demonstrateLengthComparison(double value1, Length.LengthUnit unit1, double value2, Length.LengthUnit unit2) {
+    public static boolean demonstrateLengthComparison(double value1, LengthUnit unit1, double value2, LengthUnit unit2) {
         Length length1 = new Length(value1, unit1);
         Length length2 = new Length(value2, unit2);
 
         return demonstrateLengthEquality(length1, length2);
     }
 
-    public static Length demonstrateLengthConversion(double value, Length.LengthUnit fromUnit, Length.LengthUnit toUnit) {
+    public static Length demonstrateLengthConversion(double value, LengthUnit fromUnit, LengthUnit toUnit) {
         Length length = new Length(value, fromUnit);
         return length.convertTo(toUnit);
     }
 
-    public static Length demonstrateLengthConversion(Length length, Length.LengthUnit toUnit) {
+    public static Length demonstrateLengthConversion(Length length, LengthUnit toUnit) {
         return length.convertTo(toUnit);
     }
 
@@ -43,22 +47,22 @@ public class QuantityMeasurementApp {
         return length1.add(length2);
     }
 
-    public static Length demonstrateLengthAddition(Length length1, Length length2, Length.LengthUnit targetUnit) {
+    public static Length demonstrateLengthAddition(Length length1, Length length2, LengthUnit targetUnit) {
         return length1.add(length2, targetUnit);
     }
 
     public static void main(String[] args) {
-        Length lengthInFeet = new Length(1.0, Length.LengthUnit.FEET);
-        Length lengthInYards = new Length(3.0, Length.LengthUnit.YARDS);
-        Length lengthInInches = new Length(36.0, Length.LengthUnit.INCHES);
-        Length lengthInCM = new Length(1.0, Length.LengthUnit.CENTIMETERS);
-        Length zeroFeet = new Length(0.0, Length.LengthUnit.FEET);
+        Length lengthInFeet = new Length(1.0, LengthUnit.FEET);
+        Length lengthInYards = new Length(3.0, LengthUnit.YARDS);
+        Length lengthInInches = new Length(36.0, LengthUnit.INCHES);
+        Length lengthInCM = new Length(1.0, LengthUnit.CENTIMETERS);
+        Length zeroFeet = new Length(0.0, LengthUnit.FEET);
 
-        System.out.println(demonstrateLengthConversion(lengthInFeet, Length.LengthUnit.INCHES));
-        System.out.println(demonstrateLengthConversion(lengthInYards, Length.LengthUnit.FEET));
-        System.out.println(demonstrateLengthConversion(lengthInInches, Length.LengthUnit.YARDS));
-        System.out.println(demonstrateLengthConversion(lengthInCM, Length.LengthUnit.INCHES));
-        System.out.println(demonstrateLengthConversion(zeroFeet, Length.LengthUnit.INCHES));
+        System.out.println(demonstrateLengthConversion(lengthInFeet, LengthUnit.INCHES));
+        System.out.println(demonstrateLengthConversion(lengthInYards, LengthUnit.FEET));
+        System.out.println(demonstrateLengthConversion(lengthInInches, LengthUnit.YARDS));
+        System.out.println(demonstrateLengthConversion(lengthInCM, LengthUnit.INCHES));
+        System.out.println(demonstrateLengthConversion(zeroFeet, LengthUnit.INCHES));
 
         System.out.println(demonstrateLengthAddition(lengthInFeet, lengthInFeet));
         System.out.println(demonstrateLengthAddition(lengthInFeet, lengthInInches));
@@ -69,13 +73,13 @@ public class QuantityMeasurementApp {
         System.out.println(demonstrateLengthAddition(lengthInCM, lengthInYards));
         System.out.println(demonstrateLengthAddition(lengthInInches, lengthInCM));
 
-        System.out.println(demonstrateLengthAddition(lengthInFeet, lengthInInches, Length.LengthUnit.FEET));
-        System.out.println(demonstrateLengthAddition(lengthInFeet, lengthInInches, Length.LengthUnit.INCHES));
-        System.out.println(demonstrateLengthAddition(lengthInFeet, lengthInInches, Length.LengthUnit.YARDS));
-        System.out.println(demonstrateLengthAddition(lengthInYards, lengthInFeet, Length.LengthUnit.YARDS));
-        System.out.println(demonstrateLengthAddition(lengthInInches, lengthInYards, Length.LengthUnit.FEET));
-        System.out.println(demonstrateLengthAddition(lengthInCM, lengthInInches, Length.LengthUnit.CENTIMETERS));
-        System.out.println(demonstrateLengthAddition(lengthInFeet, lengthInFeet, Length.LengthUnit.INCHES));
+        System.out.println(demonstrateLengthAddition(lengthInFeet, lengthInInches, LengthUnit.FEET));
+        System.out.println(demonstrateLengthAddition(lengthInFeet, lengthInInches, LengthUnit.INCHES));
+        System.out.println(demonstrateLengthAddition(lengthInFeet, lengthInInches, LengthUnit.YARDS));
+        System.out.println(demonstrateLengthAddition(lengthInYards, lengthInFeet, LengthUnit.YARDS));
+        System.out.println(demonstrateLengthAddition(lengthInInches, lengthInYards, LengthUnit.FEET));
+        System.out.println(demonstrateLengthAddition(lengthInCM, lengthInInches, LengthUnit.CENTIMETERS));
+        System.out.println(demonstrateLengthAddition(lengthInFeet, lengthInFeet, LengthUnit.INCHES));
 
     }
 }

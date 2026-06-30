@@ -4,23 +4,6 @@ public class Length {
     private double value;
     private LengthUnit unit;
 
-    public enum LengthUnit {
-        FEET(12.0),
-        INCHES(1.0),
-        YARDS(36.0),
-        CENTIMETERS(0.393701);
-
-        private final double conversionFactor;
-
-        public double getConversionFactor() {
-            return this.conversionFactor;
-        }
-
-        LengthUnit(double conversionFactor) {
-            this.conversionFactor = conversionFactor;
-        }
-    }
-
     public Length(double value, LengthUnit unit) {
         if (Double.isNaN(value) || Double.isInfinite(value)) {
             throw new IllegalArgumentException(
@@ -33,10 +16,6 @@ public class Length {
 
     public double getValue() {
         return value;
-    }
-
-    private double convertToBaseUnit() {
-        return value * unit.conversionFactor;
     }
 
     public boolean compare(Length thatLength) {
@@ -98,6 +77,10 @@ public class Length {
 
         double sum = convertFromBaseToTargetUnit(value1InInches + value2InInches, targetUnit);
         return new Length(Math.round(sum * 1000.0) / 1000.0, targetUnit);
+    }
+
+    private double convertToBaseUnit() {
+        return unit.convertToBaseUnit(this.value);
     }
 
     public double convertFromBaseToTargetUnit(double lengthInInches,
