@@ -1,16 +1,12 @@
 /**
- * QuantityMeasurementApp -UC8: Refactoring Unit Enum to Standalone with Conversion Responsibility
- * UC8 refactors the design from UC1–UC7 to overcome the disadvantage of embedding the LengthUnit enum within the QuantityLength class.
- * This design flaw creates circular dependencies when scaling to
- * multiple measurement categories (length, weight, volume, etc.) and violates the Single Responsibility Principle by
- * not centralizing unit-related conversion logic.
- * <p>
- * <p>
- * UC8 extracts the LengthUnit enum into a standalone,
- * top-level class and assigns it the responsibility of managing
- * conversions to and from the base unit. The QuantityLength class is
- * simplified to delegate conversion logic to the unit itself, improving
- * cohesion, reducing coupling, and establishing a scalable pattern for additional measurement categories.
+ * QuantityMeasurementApp -UC9: Weight Measurement Equality, Conversion, and Addition (Kilogram, Gram, Pound)
+ * UC9 extends the Quantity Measurement Application to support
+ * weight measurements alongside length measurements.
+ * This use case introduces a new measurement category—weight—that
+ * operates independently of length. Similar to how length measurements
+ * (feet, inches, yards, centimeters) are compared for equality,
+ * converted between units, and added together, weight measurements in different units
+ * (kilograms, grams, pounds) will support the same operations.
  */
 
 package com.bridgelabz;
@@ -51,6 +47,40 @@ public class QuantityMeasurementApp {
         return length1.add(length2, targetUnit);
     }
 
+    public static boolean demonstrateWeightEquality(Weight weight1, Weight weight2) {
+        if (weight1.compare(weight2)) {
+            System.out.println("Equal(True)");
+            return true;
+        } else {
+            System.out.println("Not Equal(False)");
+            return false;
+        }
+    }
+
+    public static boolean demonstrateWeightComparison(double value1, WeightUnit unit1, double value2, WeightUnit unit2) {
+        Weight weight1 = new Weight(value1, unit1);
+        Weight weight2 = new Weight(value2, unit2);
+
+        return demonstrateWeightEquality(weight1, weight2);
+    }
+
+    public static Weight demonstrateWeightConversion(double value, WeightUnit fromUnit, WeightUnit toUnit) {
+        Weight weight = new Weight(value, fromUnit);
+        return weight.convertTo(toUnit);
+    }
+
+    public static Weight demonstrateWeightConversion(Weight weight, WeightUnit toUnit) {
+        return weight.convertTo(toUnit);
+    }
+
+    public static Weight demonstrateWeightAddition(Weight weight1, Weight weight2) {
+        return weight1.add(weight2);
+    }
+
+    public static Weight demonstrateWeightAddition(Weight weight1, Weight weight2, WeightUnit targetUnit) {
+        return weight1.add(weight2, targetUnit);
+    }
+
     public static void main(String[] args) {
         Length lengthInFeet = new Length(1.0, LengthUnit.FEET);
         Length lengthInYards = new Length(3.0, LengthUnit.YARDS);
@@ -81,5 +111,33 @@ public class QuantityMeasurementApp {
         System.out.println(demonstrateLengthAddition(lengthInCM, lengthInInches, LengthUnit.CENTIMETERS));
         System.out.println(demonstrateLengthAddition(lengthInFeet, lengthInFeet, LengthUnit.INCHES));
 
+        Weight grams = new Weight(1.0, WeightUnit.GRAM);
+        Weight kilograms = new Weight(1000, WeightUnit.KILOGRAM);
+        Weight milligrams = new Weight(0.001, WeightUnit.MILLIGRAM);
+        Weight pound = new Weight(453.592, WeightUnit.POUND);
+        Weight tonnes = new Weight(1000000, WeightUnit.TONNE);
+
+        System.out.println(demonstrateWeightConversion(grams, WeightUnit.GRAM));
+        System.out.println(demonstrateWeightConversion(kilograms, WeightUnit.MILLIGRAM));
+        System.out.println(demonstrateWeightConversion(milligrams, WeightUnit.TONNE));
+        System.out.println(demonstrateWeightConversion(pound, WeightUnit.GRAM));
+        System.out.println(demonstrateWeightConversion(tonnes, WeightUnit.POUND));
+
+        System.out.println(demonstrateWeightAddition(milligrams, grams));
+        System.out.println(demonstrateWeightAddition(pound, kilograms));
+        System.out.println(demonstrateWeightAddition(tonnes, pound));
+        System.out.println(demonstrateWeightAddition(kilograms, grams));
+        System.out.println(demonstrateWeightAddition(grams, pound));
+        System.out.println(demonstrateWeightAddition(pound, milligrams));
+        System.out.println(demonstrateWeightAddition(tonnes, kilograms));
+        System.out.println(demonstrateWeightAddition(pound, milligrams));
+
+        System.out.println(demonstrateWeightAddition(grams, kilograms, WeightUnit.MILLIGRAM));
+        System.out.println(demonstrateWeightAddition(kilograms, milligrams, WeightUnit.TONNE));
+        System.out.println(demonstrateWeightAddition(pound, tonnes, WeightUnit.KILOGRAM));
+        System.out.println(demonstrateWeightAddition(tonnes, milligrams, WeightUnit.KILOGRAM));
+        System.out.println(demonstrateWeightAddition(tonnes, kilograms, WeightUnit.GRAM));
+        System.out.println(demonstrateWeightAddition(pound, grams, WeightUnit.TONNE));
+        System.out.println(demonstrateWeightAddition(kilograms, pound, WeightUnit.MILLIGRAM));
     }
 }
