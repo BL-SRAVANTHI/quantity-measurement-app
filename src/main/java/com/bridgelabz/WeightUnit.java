@@ -1,6 +1,6 @@
 package com.bridgelabz;
 
-public enum WeightUnit {
+public enum WeightUnit implements IMeasurable {
     MILLIGRAM(0.001),
     GRAM(1.0),
     KILOGRAM(1000.0),
